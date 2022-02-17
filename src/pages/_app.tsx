@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from 'react-query'
 
+import '../styles/reset.css'
 import '../styles/globals.css'
 
 /**
@@ -7,12 +8,10 @@ import '../styles/globals.css'
  */
 const queryClient = new QueryClient()
 
-function MyApp({ Component, pageProps }) {
+export default function App({ Component, pageProps }) {
   return (
     <QueryClientProvider client={queryClient}>
       <Component {...pageProps} />
     </QueryClientProvider>
   )
 }
-
-export default MyApp

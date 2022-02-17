@@ -5840,6 +5840,11 @@ export type PageQueryVariables = Exact<{
 
 export type PageQuery = { __typename?: 'Query', page?: { __typename?: 'Page', title: string, subtitle?: string | null, seo?: { __typename?: 'Seo', title?: string | null, description?: string | null, keywords: Array<string> } | null } | null };
 
+export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', slug: string, title: string, excerpt?: string | null, date: any, author?: { __typename?: 'Dev', name: string } | null, coverImage?: { __typename?: 'Asset', url: string } | null }> };
+
 
 export const PageDocument = `
     query Page($slug: String!) {
@@ -5872,4 +5877,40 @@ usePageQuery.document = PageDocument;
 
 
 usePageQuery.getKey = (variables: PageQueryVariables) => ['Page', variables];
+;
+
+export const PostsDocument = `
+    query Posts {
+  posts(orderBy: date_DESC) {
+    slug
+    title
+    excerpt
+    date
+    author {
+      name
+    }
+    coverImage {
+      url(transformation: {image: {resize: {width: 540, height: 300, fit: crop}}})
+    }
+  }
+}
+    `;
+export const usePostsQuery = <
+      TData = PostsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: PostsQueryVariables,
+      options?: UseQueryOptions<PostsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<PostsQuery, TError, TData>(
+      variables === undefined ? ['Posts'] : ['Posts', variables],
+      fetcher<PostsQuery, PostsQueryVariables>(client, PostsDocument, variables, headers),
+      options
+    );
+usePostsQuery.document = PostsDocument;
+
+
+usePostsQuery.getKey = (variables?: PostsQueryVariables) => variables === undefined ? ['Posts'] : ['Posts', variables];
 ;
